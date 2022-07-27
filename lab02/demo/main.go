@@ -15,6 +15,7 @@ type Student2 struct {
 	age int `json:Age`
 	school string `json:School`
 }
+
 func main() {
 	frequency := map[string]interface{}{
 		"4": "mere",
