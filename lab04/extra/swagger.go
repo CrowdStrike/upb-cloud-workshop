@@ -134,7 +134,7 @@ func main() {
 	// You need to download the Swagger HTML5 assets and change the FilePath location in the config below.
 	// Open http://localhost:8080/apidocs/?url=http://localhost:8080/apidocs.json
 	pathToSwaggerDir := "./swagger-ui/dist" 
-	http.Handle("/apidocs/", http.StripPrefix("/apidocs/", http.FileServer(http.Dir())))
+	http.Handle("/apidocs/", http.StripPrefix("/apidocs/", http.FileServer(http.Dir(pathToSwaggerDir))))
 
 	// Optionally, you may need to enable CORS for the UI to work.
 	cors := restful.CrossOriginResourceSharing{
