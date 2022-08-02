@@ -1,28 +1,28 @@
-#Databases Workshop
+# Databases Workshop
 
-##Prerequisites
+## Prerequisites
 1. Docker
 2. go v1.17+
 3. make
 
-###For Windows Users
+### For Windows Users
 Install the following:
 1. Docker (Docker Desktop; Docker Engine - Community 20.10.6)
 2. GnuWin32 (contains `make` utility)
 3. PostgreSQL 14 (client only) 
 
-##Tasks
+## Tasks
 
-###Task 1: Environment setup
+### Task 1: Environment setup
 1. To build and run the postgres docker image, run `make all`
 2. To cleanup the docker container and image created at `1.` `make clean`
 3. Download GO modules using `go mod download`
 4. Run `go build` in the root directory `lab08`
 5. ensure there are no compilation errors and you are able to run the `lab08` binary successfully
 
-###Task 2.a.: Run CRUD commands from psql
+### Task 2.a.: Run CRUD commands from psql
 
-####Use the `psql` tool to perform DB operations
+#### Use the `psql` tool to perform DB operations
 Connect to the Postgres DB: 
 ```
 psql -h 0.0.0.0 -p 5432 -U upb
@@ -39,12 +39,12 @@ upb=> select * from actors                                                      
 
 upb=>
 ```
-#####Read by ID
+##### Read by ID
 Select a given actor with the provided ID:
 ```
 select * from actors where id='001';
 ```
-#####Update by ID
+##### Update by ID
 For the above actor perform the update operation and check for changes:
 ```
 update actors set quote='I have no idea what I am doing' where id='001';
@@ -57,7 +57,7 @@ upb=> select * from actors where id='001';
 
 upb=>
 ```
-#####Create a new record
+##### Create a new record
 Create a new actor and check that it got succesfully created in the DB:
 ```
 insert into actors(id, name, quote) values('0010', 'Daniel Craig', 'The name is Bond. James Bond.');
@@ -70,7 +70,7 @@ upb=> select * from actors where id='0010';
 
 upb=>
 ```
-#####Delete the previous record
+##### Delete the previous record
 Delete the previously created actor and check again the DB:
 ```
 upb=> DELETE from actors where id='0010';
@@ -83,7 +83,7 @@ upb=> select * from actors where id='0010';
 upb=>
 ```
 
-####Now, we will perform the same operations in GO
+#### Now, we will perform the same operations in GO
 First of all, we are using a `driver` to connect to the local Postgres DB. In order to do so, we have a `connection string` that contains all the necesary information. So let's inspect the function call `sql.CreatePostgresConnection` from `main.go`
 
 Let's analyze the movies interface found in `domain/types.go`:
@@ -104,7 +104,7 @@ complete each `TODO` specified in the `main.go` file:
 - remove the previously 10 created movies
 - check if the DB does not contain them
 
-###Task 2.b.: Implement the actors repository
+### Task 2.b.: Implement the actors repository
 The `Actors` interface has the same operations as the `Movies` repositories, handling the same `CRD` operations.
 Implement the following methods:
 - `CreateActor(ctx context.Context, actor domain.Actor) error`: creates a new actor
@@ -113,7 +113,7 @@ Implement the following methods:
 - `ListActors(ctx context.Context, limit, offset int) ([]domain.Actor, error)`: retrieves a list of actors based on the `limit` and `offset` parameters
 > **_NOTE_** You should keep in mind that list operations does a full table scan, so that is why we are using `limit` and `offset` parameters to control the number of iterated records. Imagine what would happen if we would have 3M+ records in the DB, trying to fetch them in a single request.
 
-####Solution
+#### Solution
 Please try to solve the problem on your own, before checking the solution:
 ```
 package sql
@@ -264,13 +264,13 @@ func (mr *ActorRepository) ListActors(ctx context.Context, limit, offset int) ([
 }
 ```
 
-###Task 3: Join Operations on DBs
+### Task 3: Join Operations on DBs
 Keypoints to conisder:
 - what happens when listing all the movies from the DB?
 - what happens if we pull the actor IDs, when pulling the data from the actors table?
 - how can we do better? enter join tables
 
-####`psql` commands
+#### `psql` commands
 create a new table:
 ```
 upb=> create table movies_with_actors(id SERIAL PRIMARY KEY, movie_id char(36), actor_id char(36));
@@ -299,7 +299,7 @@ upb=> SELECT m.id, m.name, m.description, a.id, a.name, a.quote from MOVIES AS m
  001                                  | Matrix    | Best movie         | 002                                  | Lawrence Fishburne | People think that I'm haughty and stuck up, but really I'm just very shy
 ```
 
-####`GO` implementation
+#### `GO` implementation
 drop the previously created table, as we will create it from the `dbmigrator/movies_with_actors_repository.go`:
 ```
 drop table 
@@ -314,7 +314,7 @@ type ExtendedMovies interface {
 	ListAllMovies(ctx context.Context, limit, offset int) ([]MovieExt, error)
 }
 ```
-####Task 3.a.: 
+#### Task 3.a.: 
 For `MigrateMovies()` the steps are:
 - create the table
 - run a full table scan over the `movies` table
@@ -323,7 +323,7 @@ For `MigrateMovies()` the steps are:
 - try to create with `psql` an entry that has an invalid/missing actor ID from the `actors` table
 - now, fill out the concrete implementation in the `dbmigrator/movies_with_actors_repository.go`. The `MoviesWithActorsRepository` implements the `ExtendedMovies` interface
 
-####Solution
+#### Solution
 Please try to solve the problem on your own, before checking the solution:
 ```$xslt
 func (mwa *MoviesWithActorsRepository) MigrateMovies(ctx context.Context) error {
@@ -357,13 +357,13 @@ func (mwa *MoviesWithActorsRepository) MigrateMovies(ctx context.Context) error 
 }
 ```
 
-####Task 3.b.:
+#### Task 3.b.:
 For `ListAllMovies()` the steps are:
 - run the select statement with the inner joins. why do we need limit and offset?
 - use an intermediary struct to read all the rows
 - after reading all the rows, emit the final array with objects containing a full joined data
 
-#####Solution:
+##### Solution:
 ```
 func (mwa *MoviesWithActorsRepository) ListAllMovies(ctx context.Context, limit, offset int) ([]domain.MovieExt, error) {
 	rows, err := mwa.db.QueryContext(ctx, selectInnerJoinStmt, limit, offset)
@@ -419,7 +419,7 @@ func (mwa *MoviesWithActorsRepository) ListAllMovies(ctx context.Context, limit,
 }
 ```
 
-####Task 4.a.: Generate bulk random data
+#### Task 4.a.: Generate bulk random data
 Implement `Generate(ctx context.Context, numRecords int) error` in the `RandomActorGenerator`.
 
 *Hints*:
@@ -429,18 +429,18 @@ Implement `Generate(ctx context.Context, numRecords int) error` in the `RandomAc
 - when the `batch` number of actors is generated, do a bulk index operation in the actors table
 - replicate same behavior on bulk indexing 
 
-####Task 4.b.: Index bulk data in `actors` table
+#### Task 4.b.: Index bulk data in `actors` table
 Implement the `CreateActors(ctx context.Context, actors []domain.Actor) error` in the `ActorRepository`.
 
 > **_NOTE_** Based on the number of records that you want to generate, this may take some time, especially if leaving the input of 3M records. Also, be aware on the number of workers assigned to do the work, as the Postgres server will drop connections, based on the number of configured pool connections, as some connections slots are reserved for admin purposes. This can cause some workers to fail execution, leading to and incomplete number of generated records.
 
-####Task 5: Performance profiling
+#### Task 5: Performance profiling
 We will run 2 types of queries:
 - exact matches, where we will be looking up the `actors` table for all actors that have the given name
 - partial matches, where we will be looking for only a substring of the actor name
 We will then benchmark, the overall latency of these operations
 
-#####Task 5.a.:
+##### Task 5.a.:
 Implement the method `Count(ctx context.Context) (domain.GeneratorCounter, error)` of the `RandomActorGenerator`. <br>
 *Hints*:
 - Randomly generate a first name of the actor, and the last name.
@@ -453,7 +453,7 @@ latency = time.Now().Sub(t)
 fmt.Println(latency)
 ```
 
-#####Task 5.b.:
+##### Task 5.b.:
 Implement the method `Count(ctx context.Context, name string, useExactMatch bool) (int, error) ` for the `ActorRepository`.<br>
 *Hints*:
 - execute the statement as we did for other operations
@@ -461,7 +461,7 @@ Implement the method `Count(ctx context.Context, name string, useExactMatch bool
 
 Now we can see different latency times for several queries ran against the DB. Can we run these queries in parallel?
 
-####Task 6: Improving performance
+#### Task 6: Improving performance
 We can improve search run time, by using a database index. In order to do so, we need to recreate the docker container.<br>
 `psql` does not allow creating an index over an existing table, only if we have admin privileges.<br> 
 > **_NOTE_** Indexes can be created over an existing table, but the downside is that writes are disallowed during this operation. We can allow writes, but the server will have to perform another full table scan to index the new data.<br> 
