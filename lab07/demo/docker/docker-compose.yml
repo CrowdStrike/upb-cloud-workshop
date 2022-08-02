@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+    api:
+        build: .
+        image: hello-docker:latest
+        environment:
+            NODE_ENV: "development"
+            ENVIRONMENT_VARIABLE: "value"
+        ports:
+            - "18080:8080"
+        networks:
+            - network-docker
+        depends_on:
+            - postgres
+
+    postgres:
+        image: postgres:latest
+        environment:
+            POSTGRES_PASSWORD: admin
+            POSTGRES_USER: admin
+            POSTGRES_DB: admindb
+        volumes:
+            - volume-docker:/var/lib/postgresql/data
+        networks:
+            - network-docker
+
+volumes:
+    volume-docker: {}
+
+networks:
+    network-docker: {}
