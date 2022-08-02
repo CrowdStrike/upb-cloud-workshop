@@ -59,7 +59,7 @@ func main() {
 
 	// TODO BONUS - using the os package configure the port using an environment variable
 	//              you will have to provide a default value if this is empty. Then configure the
-	//              the port in docker-compose and
+	//              the port in docker-compose and try to run it again
 	fmt.Printf("Server running (port=8080)\n")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
