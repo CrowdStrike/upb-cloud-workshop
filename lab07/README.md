@@ -18,3 +18,10 @@ For testing try running a container using `docker run` and exposing the port use
 > **_NOTE_** You will have to modify the prometheus config file for jobs: `./monitoring/prometheus/prometheus.yml` and add a new job for you exported metrics.
 
 4. Try creating some plots in grafana with the metrics that you are exporting.
+
+5. Extra - Using one of the following metrics exported by prometheus itself create some grafana panels:
+
+```
+go_memstats_alloc_bytes_total
+promhttp_metric_handler_requests_total
+```
