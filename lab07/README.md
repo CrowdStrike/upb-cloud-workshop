@@ -6,7 +6,7 @@ Lets start with our setup. Follow the guide mentioned [here](https://docs.docker
 
 In `tasks` folder you are given an app that you have to monitor using prometheus metrics, dockerize it and create some plots. Try adopting an incremental solving approach:
 
-1. Using [this](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) package and the information provided [here](https://github.com/prometheus/client_golang/blob/main/prometheus/examples_test.go). Create the metrics mentioned with `TODOs` register them and them create the prometheus handler.
+1. Using [this](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) package and the information provided [here](https://github.com/prometheus/client_golang/blob/main/prometheus/examples_test.go). Create the metrics mentioned with `TODOs` register them and them create the prometheus handler. For histogram you can use the following [example](https://github.com/prometheus/client_golang/blob/main/prometheus/example_timer_test.go) to use it in combination with a prometheus timer.
 
 2. Using the dockerfile from the demo try creating a docker image for this app.
 For testing try running a container using `docker run` and exposing the port used by your app.
@@ -18,3 +18,10 @@ For testing try running a container using `docker run` and exposing the port use
 > **_NOTE_** You will have to modify the prometheus config file for jobs: `./monitoring/prometheus/prometheus.yml` and add a new job for you exported metrics.
 
 4. Try creating some plots in grafana with the metrics that you are exporting.
+
+5. Extra - Using one of the following metrics exported by prometheus itself create some grafana panels:
+
+```
+go_memstats_alloc_bytes_total
+promhttp_metric_handler_requests_total
+```
