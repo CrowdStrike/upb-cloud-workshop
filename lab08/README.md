@@ -7,9 +7,12 @@
 
 ### For Windows Users
 Install the following:
-1. Docker (Docker Desktop; Docker Engine - Community 20.10.6)
-2. GnuWin32 (contains `make` utility)
-3. PostgreSQL 14 (client only) 
+1. Install WSL2 driver: https://docs.docker.com/desktop/install/windows-install/
+2. Docker (Docker Desktop; Docker Engine - Community 20.10.6)
+3. GnuWin32 (contains `make` utility)
+4. PostgreSQL 14 (client only) 
+
+> **_NOTE_** Please note if you are unable to run make on your local machine, consider downloading the VM from: https://ctipub-my.sharepoint.com/:u:/g/personal/andrei_albisoru_stud_acs_upb_ro/Eb7uqByEaalNrzALgdeTjpkBhwXFSkbIc20TZyaZscKuyA?e=DxPa8H
 
 ## Tasks
 
