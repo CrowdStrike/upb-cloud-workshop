@@ -14,7 +14,7 @@ Install the following:
 
 > **_NOTE_** Please note if you are unable to run make on your local machine, consider downloading the VM from: https://ctipub-my.sharepoint.com/:u:/g/personal/andrei_albisoru_stud_acs_upb_ro/Eb7uqByEaalNrzALgdeTjpkBhwXFSkbIc20TZyaZscKuyA?e=DxPa8H (vmbox) or vmware image from: https://ctipub-my.sharepoint.com/:u:/g/personal/andrei_albisoru_stud_acs_upb_ro/EVxcktDS7RJCqdcD7Nk_boQBgNaw3j8mH7pkbYkGoQUXTA?e=NYL8Qx
 
-> **_NOTE_** For issues with Network Bridge Mode https://communities.vmware.com/t5/VMware-Workstation-Pro/Network-Bridge-Mode-Not-Working-Windows-10-Host/td-p/1407019 
+> **_NOTE_** For issues with Network Bridge Mode check out this link: https://communities.vmware.com/t5/VMware-Workstation-Pro/Network-Bridge-Mode-Not-Working-Windows-10-Host/td-p/1407019 
  
 ## Tasks
 
@@ -30,7 +30,7 @@ Install the following:
 #### Use the `psql` tool to perform DB operations
 Connect to the Postgres DB: 
 ```
-psql -h 0.0.0.0 -p 5432 -U upb
+psql -h localhost -p 5432 -U upb
 ```
 Perform the following `select` operation:
 ```
