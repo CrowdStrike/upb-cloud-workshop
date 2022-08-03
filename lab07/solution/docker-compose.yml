@@ -1,0 +1,70 @@
+version: '3.8'
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    ports:
+      - 9090:9090
+    networks:
+      - monitor-net
+    depends_on:
+      - api-1
+      - api-2
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    networks:
+      - monitor-net
+    depends_on:
+      - prometheus
+
+  # We are configuring to apis in order to plot multiple services to plot in grafana
+  api-1:
+    image: api:latest
+    build: ./api/
+    ports:
+      - 18081:8081
+    environment:
+      - LISTEN_PORT=8081 # We are getting the port dynamically from env
+    networks:
+      - monitor-net
+
+  api-2:
+    image: api:latest
+    build: ./api/
+    ports:
+      - 18082:8082
+    environment:
+      - LISTEN_PORT=8082 # We are getting the port dynamically from env
+    networks:
+      - monitor-net
+
+networks:
+  monitor-net:
+    driver: bridge
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
