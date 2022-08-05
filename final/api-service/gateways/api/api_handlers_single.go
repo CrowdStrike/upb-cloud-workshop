@@ -1,9 +1,10 @@
 package api
 
 import (
-	"exam-api/domain"
 	"fmt"
 	"net/http"
+
+	"exam-api/domain"
 
 	"github.com/emicklei/go-restful/v3"
 	log "github.com/sirupsen/logrus"
